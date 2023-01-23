@@ -25,22 +25,22 @@ k8s-worker
 ```
 
 And test connection with default ansible ping command
-> ansible --inventory ~/cloud-init/ansible/inventory/cluster.ini k8s-cluster -m ping
+    ansible --inventory ~/cloud-init/ansible/inventory/cluster.ini k8s-cluster -m ping
 
 ## Step 3. Clone git kubespray repo and install all requirements
 
 Clone repo  
-    $ git clone git@github.com:kubernetes-sigs/kubespray.git
+    git clone git@github.com:kubernetes-sigs/kubespray.git
 
 Install python requirements  
-    $ pip install -r requirements.txt    
+    pip install -r requirements.txt    
 
 Make copy of dir  
-    $ cp -R ./kubespray/inventory/sample ./kubespray/inventory/cluster
+    cp -R ./kubespray/inventory/sample ./kubespray/inventory/cluster
 
 Edit cluster nodes for ansible  
-    ```ini
-        [all]
+```ini
+    [all]
         master1 ansible_host=10.57.172.124
         master2 ansible_host=10.57.172.117
         master3 ansible_host=10.57.172.216
