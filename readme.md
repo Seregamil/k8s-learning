@@ -25,58 +25,68 @@ k8s-worker
 ```
 
 And test connection with default ansible ping command
-	ansible --inventory ~/cloud-init/ansible/inventory/cluster.ini k8s-cluster -m ping
+```bash
+ansible --inventory ~/cloud-init/ansible/inventory/cluster.ini k8s-cluster -m ping
+```
 
 ## Step 3. Clone git kubespray repo and install all requirements
 
 Clone repo  
-	git clone git@github.com:kubernetes-sigs/kubespray.git
+```bash
+git clone git@github.com:kubernetes-sigs/kubespray.git
+```
 
 Install python requirements  
-	pip install -r requirements.txt	
+```bash
+pip install -r requirements.txt	
+```
 
 Make copy of dir  
-	cp -R ./kubespray/inventory/sample ./kubespray/inventory/cluster
+```bash
+cp -R ./kubespray/inventory/sample ./kubespray/inventory/cluster
+```
 
 Edit cluster nodes for ansible  
 ```ini
-	[all]
-	master1 ansible_host=10.57.172.124
-	master2 ansible_host=10.57.172.117
-	master3 ansible_host=10.57.172.216
-	worker1 ansible_host=10.57.172.213
-	worker2 ansible_host=10.57.172.221
-	worker3 ansible_host=10.57.172.145
+[all]
+master1 ansible_host=10.57.172.124
+master2 ansible_host=10.57.172.117
+master3 ansible_host=10.57.172.216
+worker1 ansible_host=10.57.172.213
+worker2 ansible_host=10.57.172.221
+worker3 ansible_host=10.57.172.145
 		
-	# ## configure a bastion host if your nodes are not directly reachable
-	# [bastion]
-	# bastion ansible_host=x.x.x.x ansible_user=some_user
+# ## configure a bastion host if your nodes are not directly reachable
+# [bastion]
+# bastion ansible_host=x.x.x.x ansible_user=some_user
 
-	[kube_control_plane:children]
-	kube_master
+[kube_control_plane:children]
+kube_master
 
-	[kube_master]
-	master1
-	master2
-	master3
+[kube_master]
+master1
+master2
+master3
 
-	[etcd:children]
-	kube_master
+[etcd:children]
+kube_master
 
-	[kube_node]
-	worker1
-	worker2
-	worker3
+[kube_node]
+worker1
+worker2
+worker3
 
-	[calico_rr]
+[calico_rr]
 
-	[k8s_cluster:children]
-	kube_master
-	kube_node
-	calico_rr
+[k8s_cluster:children]
+kube_master
+kube_node
+calico_rr
 ```
 
 Edit cluster configuration in group_vars/k8s_cluster/k8s-cluster.yaml (For expert)  
 
 ## Run ansible-playbook installation tool (Need -b or --become)
-	ansible-playbook --inventory=./inventory/cluster/inventory.ini ./cluster.yml --become
+```bash
+ansible-playbook --inventory=./inventory/cluster/inventory.ini ./cluster.yml --become
+```
