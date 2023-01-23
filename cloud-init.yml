@@ -1,0 +1,27 @@
+# https://cloudinit.readthedocs.io/en/latest/reference/examples.html#including-users-and-groups
+
+package_update: true # by default false
+package_upgrade: true # by default false
+
+groups:
+  - admingroup: [root,sys]
+  - cloud-users
+
+users:
+  - default
+  - name: cxxy
+    gecos: Sergey Milantev
+    groups: [ users, admin, wheel ]
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    shell: /bin/bash
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDDAzKz54THF4TrzIzzJjy9W6NR9fS9iVlIF0jAo8hfAdyhgRwRu3PL9uQEtYOjPgLm6l9W0nI7NF4ECW+uWT/RRAqUFQzGWYY0NF9NTMOY/IVSCx31gii4e3dowNZ8yBtI0EGm77qIHF6f/aI9xlEo1eXSExROJ34uNsSCC+eLz/e6KLFedo+ZeLc6cgusBfeLipE/StkyUoUuvpixA0P13IJ9UlmRW/vetJ5blEXeu/pQE2B0NAUTZqSgA0yYRAokM9/0tZ+YKVWWLnLD+fq2lDPYHXgOrGmQ00yCOEHP6Iyav9HI21rLV77uOlUbEAbnSA/E4VV/flytMIO6B83BbT3ykFjgSzK0ruEPD/Cdl3m4ePxqLU7/C4PTIg7c4CkKoNpXvhanNb3JCt6d8IviS890QApG0X/WqRHuwEkzjxgNbXNDPHS5LVYUGH+cgM+mUmrXQYMU8nSv9DiUVODibAlF8aH1LnFP9u1O6cJHIqx80rfY9+yPykL8t3mxHWk= cxxy@sys-msv
+  
+  - name: ansible
+    gecos: Ansible User
+    groups: [ users, admin, wheel ]
+    shell: /bin/bash
+    sudo: ALL=(ALL) NOPASSWD:ALL
+    lock_passwd: true
+    ssh_authorized_keys:
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDDAzKz54THF4TrzIzzJjy9W6NR9fS9iVlIF0jAo8hfAdyhgRwRu3PL9uQEtYOjPgLm6l9W0nI7NF4ECW+uWT/RRAqUFQzGWYY0NF9NTMOY/IVSCx31gii4e3dowNZ8yBtI0EGm77qIHF6f/aI9xlEo1eXSExROJ34uNsSCC+eLz/e6KLFedo+ZeLc6cgusBfeLipE/StkyUoUuvpixA0P13IJ9UlmRW/vetJ5blEXeu/pQE2B0NAUTZqSgA0yYRAokM9/0tZ+YKVWWLnLD+fq2lDPYHXgOrGmQ00yCOEHP6Iyav9HI21rLV77uOlUbEAbnSA/E4VV/flytMIO6B83BbT3ykFjgSzK0ruEPD/Cdl3m4ePxqLU7/C4PTIg7c4CkKoNpXvhanNb3JCt6d8IviS890QApG0X/WqRHuwEkzjxgNbXNDPHS5LVYUGH+cgM+mUmrXQYMU8nSv9DiUVODibAlF8aH1LnFP9u1O6cJHIqx80rfY9+yPykL8t3mxHWk= cxxy@sys-msv
