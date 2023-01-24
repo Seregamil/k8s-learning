@@ -90,3 +90,53 @@ Edit cluster configuration in group_vars/k8s_cluster/k8s-cluster.yaml (For exper
 ```bash
 ansible-playbook --inventory=./inventory/cluster/inventory.ini ./cluster.yml --become
 ```
+
+## Now we have installed cluster on machines. We should test them
+For test cluster, connect to master-node and test cluster:
+```bash
+kubectl cluster-info
+```
+
+If we have error by 8080 port, move kube config only on **master**-nodes  
+
+```bash
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+```
+
+## Install kubectl on local workstation for connecting to cluster
+
+```bash 
+
+# download file
+curl -LO https://storage.googleapis.com/kubernetes-release/release/`curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt`/bin/linux/amd64/kubectl
+
+# set as executable
+chmod +x ./kubectl
+
+# move to /usr/local/bin folder for access from any place in terminal
+sudo mv ./kubectl /usr/local/bin/kubectl
+
+# test them
+kubectl version --client
+```
+
+For establish connection from local kubectl to k8s master node we can get configuration file from master-node
+
+```bash
+# download file from remote host
+scp 10.57.172.124:/etc/kubernetes/admin.conf ~/cloud-init/admin.conf
+
+# update ENV variable
+export KUBECONFIG=~/cloud-init/admin.conf
+```
+Now, we need test connection to cluster;
+
+```bash
+kubectl version
+```
+
+If we see message "connection refused", change IP-address from localhost in config-file to master-node address and test connection
+
+
