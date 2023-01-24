@@ -129,7 +129,11 @@ For establish connection from local kubectl to k8s master node we can get config
 scp 10.57.172.124:/etc/kubernetes/admin.conf ~/cloud-init/admin.conf
 
 # update ENV variable
-export KUBECONFIG=~/cloud-init/admin.conf
+
+echo "export KUBECONFIG=~/cloud-init/admin.conf" >> ~/.bash_profile
+
+# apply changes
+source ~/.bash_profile
 ```
 Now, we need test connection to cluster;
 
@@ -139,4 +143,85 @@ kubectl version
 
 If we see message "connection refused", change IP-address from localhost in config-file to master-node address and test connection
 
+Get k8s nodes
+```bash
+kubectl get nodes -o wide
 
+NAME      STATUS   ROLES           AGE    VERSION   INTERNAL-IP     EXTERNAL-IP   OS-IMAGE             KERNEL-VERSION      CONTAINER-RUNTIME
+master1   Ready    control-plane   10h    v1.25.6   10.57.172.124   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+master2   Ready    control-plane   144m   v1.25.6   10.57.172.117   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+master3   Ready    control-plane   143m   v1.25.6   10.57.172.216   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+worker1   Ready    <none>          142m   v1.25.6   10.57.172.213   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+worker2   Ready    <none>          142m   v1.25.6   10.57.172.221   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+worker3   Ready    <none>          142m   v1.25.6   10.57.172.145   <none>        Ubuntu 22.04.1 LTS   5.15.0-58-generic   containerd://1.6.15
+```
+
+## Now we need dashboard for k8s cluster 
+All actions deal on local workstation  
+Create new service with defenition from remote repository
+
+```bash
+# create service
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.7.0/aio/deploy/recommended.yaml
+
+# run proxy service
+kubectl proxy
+```
+
+Now we can connect to [dashboard](http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/login) from localhost station
+
+## Create admin account for access to dashboard
+
+First time we should be create service account with name admin-user in namespace kubernetes-dashboard (default created for dashboard)  
+Create **./manifests/accounting/service-account.yaml** 
+
+```yaml
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: admin-user
+  namespace: kubernetes-dashboard
+```
+
+Apply manifest
+```bash
+kubectl apply -f ~/cloud-init/manifests/accounting/service-account.yaml
+```
+
+Output:
+> serviceaccount/admin-user created
+
+The most popular tools already have ClusterRole with user cluster-admin in the cluster. We need to link created user to exists admin account manualy
+Create **./manifests/accounting/cluster-role-binding.yaml**
+
+```yaml
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: admin-user
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: admin-user
+  namespace: kubernetes-dashboard
+```
+
+Apply manifest
+```bash
+kubectl apply -f ~/cloud-init/manifests/accounting/cluster-role-binding.yaml
+```
+Output:  
+> clusterrolebinding.rbac.authorization.k8s.io/admin-user created
+
+Create admin token 
+```bash
+kubectl -n kubernetes-dashboard create token admin-user
+```
+
+Output:  
+> eyJhbGciOiJSUzI1NiIsImtpZCI6InBDNnhmUWR1VzJ6ZUVKZHdjSmgzdVVXaTA5bkU3cTUxQ1A3WkNNODY2c1EifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjc0NTU2MjEzLCJpYXQiOjE2NzQ1NTI2MTMsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJhZG1pbi11c2VyIiwidWlkIjoiYmE4Y2ZmMjgtOTRjNy00ZWFmLWE2NWUtNzk1ZDI0ZjUyOGZjIn19LCJuYmYiOjE2NzQ1NTI2MTMsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlcm5ldGVzLWRhc2hib2FyZDphZG1pbi11c2VyIn0.qUwno1PCTepp4bzqPKyhuAO7B9cd1jg6eLNVTD8P9utr8EToHECpYSs7KnC-dJRo0L8DTydUKoHMSWZLA8SGyO7WZ4UfjeLcXDuU9vWXHOw0SnDA_FjcCP8QQUYejkTzcTGxAt73B9jOG8mm7ZIVYJkowYFotGSoQvtpb_3l0kEi9Hd0SRXh-yhjPI-BtHSBpk9rgYEwwp_sZU0wptbeli7tBNWzyrEK2ZNDKmV7VqWtvkJxaICZRkEz1PyHFcs5juslC5loRd39myaZ6fTshvivgSMPJivrWNGDWi5ycnWhpCbsXhyTDEvs7lTTx79v8eugD2m7eVX7dvLzlyLZtg
+
+Paste output token into form and u are connected to dashboard
