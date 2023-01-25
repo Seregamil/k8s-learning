@@ -225,3 +225,17 @@ Output:
 > eyJhbGciOiJSUzI1NiIsImtpZCI6InBDNnhmUWR1VzJ6ZUVKZHdjSmgzdVVXaTA5bkU3cTUxQ1A3WkNNODY2c1EifQ.eyJhdWQiOlsiaHR0cHM6Ly9rdWJlcm5ldGVzLmRlZmF1bHQuc3ZjLmNsdXN0ZXIubG9jYWwiXSwiZXhwIjoxNjc0NTU2MjEzLCJpYXQiOjE2NzQ1NTI2MTMsImlzcyI6Imh0dHBzOi8va3ViZXJuZXRlcy5kZWZhdWx0LnN2Yy5jbHVzdGVyLmxvY2FsIiwia3ViZXJuZXRlcy5pbyI6eyJuYW1lc3BhY2UiOiJrdWJlcm5ldGVzLWRhc2hib2FyZCIsInNlcnZpY2VhY2NvdW50Ijp7Im5hbWUiOiJhZG1pbi11c2VyIiwidWlkIjoiYmE4Y2ZmMjgtOTRjNy00ZWFmLWE2NWUtNzk1ZDI0ZjUyOGZjIn19LCJuYmYiOjE2NzQ1NTI2MTMsInN1YiI6InN5c3RlbTpzZXJ2aWNlYWNjb3VudDprdWJlcm5ldGVzLWRhc2hib2FyZDphZG1pbi11c2VyIn0.qUwno1PCTepp4bzqPKyhuAO7B9cd1jg6eLNVTD8P9utr8EToHECpYSs7KnC-dJRo0L8DTydUKoHMSWZLA8SGyO7WZ4UfjeLcXDuU9vWXHOw0SnDA_FjcCP8QQUYejkTzcTGxAt73B9jOG8mm7ZIVYJkowYFotGSoQvtpb_3l0kEi9Hd0SRXh-yhjPI-BtHSBpk9rgYEwwp_sZU0wptbeli7tBNWzyrEK2ZNDKmV7VqWtvkJxaICZRkEz1PyHFcs5juslC5loRd39myaZ6fTshvivgSMPJivrWNGDWi5ycnWhpCbsXhyTDEvs7lTTx79v8eugD2m7eVX7dvLzlyLZtg
 
 Paste output token into form and u are connected to dashboard
+
+## Choose ingress controller for access from non-demilitarized zone
+
+So. We can choose between 3 most popular Ingress controllers and one default k8s controller:  
+1. **K8s** default controller
+2. **NGINX** Ingress controller
+3. **HAProxy** Ingress controller
+4. **Traefik** Ingress controller
+
+Default **k8s** and **NGINX** controllers are very slow that **Traefik** and **HAProxy**.  
+**HAProxy** faster that Traefik in ops on one CPU, **Traefik** faster that **HAProxy** on latency between controller and services.  
+I choose **Traefik** Ingress Controller on my learning.
+
+## Configure Traefik Ingress Controller
