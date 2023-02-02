@@ -238,4 +238,26 @@ Default **k8s** and **NGINX** controllers are very slow that **Traefik** and **H
 **HAProxy** faster that Traefik in ops on one CPU, **Traefik** faster that **HAProxy** on latency between controller and services.  
 I choose **Traefik** Ingress Controller on my learning.
 
+## For configuring Traefik and others packages we should install Helm packages manager
+
+[Fully installing introduction](https://helm.sh/docs/intro/install/)
+
+```bash
+# Deal all actions on local workstation
+# create helm dir
+mkdir ~/cloud-init/helm
+
+# get latest release from git repo and save into helm installation dir
+wget https://get.helm.sh/helm-v3.11.0-linux-amd64.tar.gz -O ~/cloud-init/helm/helm-v3.11.0-linux-amd64.tar.gz
+
+# unpack archive
+tar -zxvf ~/cloud-init/helm/helm-v3.11.0-linux-amd64.tar.gz
+
+# move binary 
+mv ~/cloud-init/helm/linux-amd64/helm /usr/local/bin/helm
+
+# test them
+helm help
+```
+
 ## Configure Traefik Ingress Controller
