@@ -286,12 +286,15 @@ Output:
 helm search repo traefik
 ```
 
-Output:
-> traefik/traefik         20.8.0          v2.9.6          A Traefik based Kubernetes ingress controller     
-traefik/traefik-mesh    4.1.1           v1.4.8          Traefik Mesh - Simpler Service Mesh               
-traefik/traefikee       1.7.0           v2.9.1          Traefik Enterprise is a unified cloud-native ne...
-traefik/hub-agent       1.2.2           v1.1.0          Traefik Hub is an all-in-one global networking ...
-traefik/maesh           2.1.2           v1.3.2          Maesh - Simpler Service Mesh              
+Output:  
+
+| NAME                 	| CHART VERSION 	| APP VERSION 	| DESCRIPTION                                        	|
+|----------------------	|---------------	|-------------	|----------------------------------------------------	|
+| traefik/traefik      	| 20.8.0        	| v2.9.6      	| A Traefik based Kubernetes ingress controller      	|
+| traefik/traefik-mesh 	| 4.1.1         	| v1.4.8      	| Traefik Mesh - Simpler Service Mesh                	|
+| traefik/traefikee    	| 1.7.0         	| v2.9.1      	| Traefik Enterprise is a unified cloud-native ne... 	|
+| traefik/hub-agent    	| 1.2.2         	| v1.1.0      	| Traefik Hub is an all-in-one global networking ... 	|
+| traefik/maesh        	| 2.1.2         	| v1.3.2      	| Maesh - Simpler Service Mesh                       	|              
 
 ```bash
 # install the traefik helm chart
