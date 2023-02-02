@@ -251,13 +251,51 @@ mkdir ~/cloud-init/helm
 wget https://get.helm.sh/helm-v3.11.0-linux-amd64.tar.gz -O ~/cloud-init/helm/helm-v3.11.0-linux-amd64.tar.gz
 
 # unpack archive
-tar -zxvf ~/cloud-init/helm/helm-v3.11.0-linux-amd64.tar.gz
+tar -zxvf ~/cloud-init/helm/helm-v3.11.0-linux-amd64.tar.gz -c ~/cloud-init/helm
 
 # move binary 
-mv ~/cloud-init/helm/linux-amd64/helm /usr/local/bin/helm
+sudo mv ~/cloud-init/helm/linux-amd64/helm /usr/local/bin/helm
+
+# remove temporary files
+rm -rf ~/cloud-init/helm
 
 # test them
 helm help
 ```
 
 ## Configure Traefik Ingress Controller
+
+![Traefik schema](https://blog.zachinachshon.com/assets/images/network/load-balancer/traefik/traefik-overview.png)
+
+```bash
+# Create Traefik namespace
+kubectl create namespace traefik
+
+# add helm repo 
+helm repo add traefik https://traefik.github.io/charts
+
+# update local helm repo cache
+helm repo update
+```
+Output:
+> ...Successfully got an update from the "traefik" chart repository. Update Complete. ⎈Happy Helming!⎈
+
+```bash
+# search for latest traefik chart version
+
+helm search repo traefik
+```
+
+Output:
+> raefik/traefik         20.8.0          v2.9.6          A Traefik based Kubernetes ingress controller     
+traefik/traefik-mesh    4.1.1           v1.4.8          Traefik Mesh - Simpler Service Mesh               
+traefik/traefikee       1.7.0           v2.9.1          Traefik Enterprise is a unified cloud-native ne...
+traefik/hub-agent       1.2.2           v1.1.0          Traefik Hub is an all-in-one global networking ...
+traefik/maesh           2.1.2           v1.3.2          Maesh - Simpler Service Mesh              
+
+```bash
+# install the traefik helm chart
+
+helm install --namespace=traefik \
+    traefik traefik/traefik
+```
